@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ayan UPI Payment QR</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+:root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #101827, #253b64);
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    color: #111;
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+h1 { color: #172554; margin-bottom: 10px; }
+.subtitle { color: #777; margin-bottom: 25px; }
+
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+    margin-bottom: 15px;
+}
+input:focus { border-color: #2563eb; }
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+button:hover { background: #1d4ed8; }
+
+#qrBox {
+    margin: 20px auto;
+    padding: 15px;
+    display: none;
+    width: fit-content;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 12px;
+}
+
+#qrCode img { margin: auto; }
+
+.amount {
+    font-size: 26px;
+    font-weight: bold;
+    color: #16a34a;
+    margin: 10px;
+}
+
+.upi {
+    color: #777;
+    font-size: 13px;
+    margin-top: 15px;
+    word-break: break-all;
+}
+
+.download { background: #16a34a; display: none; }
+.download:hover { background: #15803d; }
+
+.footer { margin-top: 20px; color: #aaa; font-size: 12px; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AYAN UPI PAY</h1>
+    <p class="subtitle">Generate Your Payment QR Code</p>
+
+    <label>Enter Amount (₹)</label>
+
+    <input type="number" id="amount" placeholder="Enter amount" min="1" step="0.01">
+
+    <button onclick="generateQR()">Generate QR Code</button>
+
+    <div id="qrBox">
+        <h3>Scan &amp; Pay</h3>
+        <div id="qrCode"></div>
+        <div class="amount" id="showAmount"></div>
+        <p>AYAN UPI PAYMENT</p>
+    </div>
+
+    <button class="download" id="downloadBtn" onclick="downloadQR()">Download QR Code</button>
+
+    <p class="upi">UPI ID: ayankhanp786@okaxis</p>
+
+    <div class="footer">Powered by AYAN UPI PAY</div>
+
+</div>
+
+<script>
+const upiID = "ayankhanp786@okaxis";
+
+function generateQR() {
+    let amount = document.getElementById("amount").value;
+
+    if (!amount || !Number.isFinite(Number(amount)) || Number(amount) <= 0) {
+        alert("Please enter a valid amount!");
+        return;
+    }
+
+    amount = Number(amount).toFixed(2);
+
+    let upiLink =
+        "upi://pay?pa=" + encodeURIComponent(upiID) +
+        "&pn=" + encodeURIComponent("Ayan") +
+        "&am=" + amount +
+        "&cu=INR";
+
+    document.getElementById("qrCode").innerHTML = "";
+
+    new QRCode(document.getElementById("qrCode"), {
+        text: upiLink,
+        width: 220,
+        height: 220,
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    document.getElementById("showAmount").innerText = "₹" + amount;
+    document.getElementById("qrBox").style.display = "block";
+    document.getElementById("downloadBtn").style.display = "block";
+}
+
+function downloadQR() {
+    let qr = document.querySelector("#qrCode img");
+    if (qr) {
+        let link = document.createElement("a");
+        link.href = qr.src;
+        link.download = "Ayan-UPI-Payment-QR.png";
+        link.click();
+    }
+}
+</script>
+
+</body>
+</html>
